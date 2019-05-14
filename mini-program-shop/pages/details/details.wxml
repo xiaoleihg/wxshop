@@ -1,0 +1,29 @@
+<view class='container'>
+  <view class='goods-img'>
+    <image src='{{goods.goodsImg}}'></image>
+  </view>
+  <view class='seller-info'>
+    <image src='../../image/common/store.png'></image>
+    <view class='shop-name'>{{goods.business.shopName}}</view>
+    <view class='intostore' bindtap='intoStore' hover-class='hover-toshop'>进店看看</view>
+  </view>
+  <!-- 主要信息   -->
+  <view class='goods-info'>
+    <view class='goods-name'>
+    <label></label>
+      <text>商品名称：{{goods.goodsName}}</text>
+    </view>
+    <view class='goods-price'>
+      <text>单    价：{{goods.price}}￥</text>
+    </view>
+    <view class='goods-desc'>
+      <text>商品详情：{{goods.info}}</text>
+    </view>
+  </view>
+  <view class='footer'>
+    <!-- <view class="goods-bottom-btn green" bindtap='bindToPay'>前往付款</view> -->
+    <view class="goods-bottom-btn blue" bindtap='bindToCart' id='{{goods.gid}}'>加入购物车</view>
+    <view class="goods-bottom-btn red" bindtap='bindToHome'>前往商城</view>
+  </view>
+</view>
+ 

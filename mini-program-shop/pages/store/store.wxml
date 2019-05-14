@@ -1,0 +1,31 @@
+<view class='seller-info'>
+  <image src='../../image/common/store.png'></image>
+  <view class='shop-name'>{{business.shopName}}</view>
+</view>
+<view class='box'> 
+  <!-- 全部商品展示 -->
+  <view class='goods'>
+  <!-- 商品展示标题 -->
+    <view class='goodsTitle'>
+      <text>全部商品</text>
+    </view>
+    <!--商品具体展示-->
+    <view class='goods-content'>
+      <block wx:for="{{goodsList}}">
+        <view class='goods-item' bindtap='toDetails' id="{{item.gid}}">
+          <view class="goods-img">
+            <image src="{{item.goodsImg}}" class="index_img"></image>
+          </view>
+          <view class="goods_bottom">
+            <text>{{item.goodsName}}</text>
+            <view></view>
+            <text class='price'>单价：{{item.price}}￥</text>
+            <view class="addToCart" catchtap="addToCart" hover-class='hover-add' id='{{item.gid}}'>
+              <image src="../../image/common/toCart.png"></image>
+          </view>
+          </view>
+        </view>
+      </block>
+    </view> 
+  </view> <!-- 全部商品展示完结 -->
+</view><!-- box完结 -->

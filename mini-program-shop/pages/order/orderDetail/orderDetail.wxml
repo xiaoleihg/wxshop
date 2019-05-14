@@ -1,0 +1,57 @@
+<view class="w100">
+  <view class="orderDetails">
+    <view class="orderListTitle">
+      <view class="userImg"><image src="../../../image/common/store.png"></image></view>
+      <text class="userName">{{orderItem.goods.business.shopName}}</text>
+      <text class="orderStatus" hidden="{{orderItem.status != 0}}">待付款</text>
+      <text class="orderStatus" hidden="{{orderItem.status != 1}}">待发货</text>
+      <text class="orderStatus" hidden="{{orderItem.status != 2}}">待收货</text>
+      <text class="orderStatus" hidden="{{orderItem.status != 3}}">已完成</text>
+    </view>
+    <view class="orderListDetails">
+      <view class="productImg">
+        <image src="{{orderItem.goods.goodsImg}}"></image>
+      </view>
+      <view class="productInfo">
+        <view class="productTitle">{{orderItem.goods.goodsName}}</view>
+        <text class="productPrice">￥{{orderItem.goods.price}}</text>
+        <text class="productQuantity">x{{orderItem.count}}</text>
+      </view>
+    </view>
+    <view class="productCount">
+      <view class='subtotal'>合计：￥<text>{{orderItem.subtotal}}</text></view>
+      <view class='operation' hidden="{{orderItem.status != 0}}" catchtap='changeStatus' data-status='{{orderItem.status}}' data-id='{{orderItem.orderItemId}}' hover-class='hover-update'>立即付款</view>
+      <view class='operation' hidden="{{orderItem.status != 1}}">等待发货</view>
+      <view class='operation' hidden="{{orderItem.status != 2}}" catchtap='changeStatus' data-status='{{orderItem.status}}' data-id='{{orderItem.orderItemId}}' hover-class='hover-update'>确认收货</view>
+      <view class='operation' hidden="{{orderItem.status == 3}}" bindtap='changeStatus'></view> 
+    </view>
+  </view>
+  <view class="line"></view>
+  <view class="p_all bg_white mt10 font_14">
+    <view class="df">
+      <view class="df_1 c6">
+      <view class="l_h20">收货人：<text class="fl_r mr10">{{order.user.name}}</text></view>
+      <view class="l_h20 mt5">地址：{{order.address}}</view>
+      </view>
+    </view>
+  </view>	
+  <view class="line"></view>
+  <view class="p_all bg_white mt10 font_14">
+    <view class="df">
+      <view class="df_1 c6">
+      <view class="l_h20">卖家：<text class="fl_r mr10">{{orderItem.goods.business.name}}</text></view>
+      <view class="l_h20 mt5">店铺名：{{orderItem.goods.business.shopName}}</view>
+      <view class="l_h20 mt5">联系电话：{{orderItem.goods.business.phone}}</view>
+      </view>
+    </view>
+  </view>	
+  <view class="line"></view>
+  <view class="p_all bg_white mt10 c6 l_h20  font_14">
+    <view >
+      订单编号：{{order.oid}}
+    </view>
+    <view class="mt10">
+      订单时间：{{order.createTime}}
+    </view>         
+  </view>     
+</view>

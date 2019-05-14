@@ -1,0 +1,63 @@
+<view class='container'>
+  <view class='userInfo'>
+    <form bindsubmit='doUpdate'>
+      <!--头像-->
+      <view class="inputView" bindtap='toChooseImg'>               
+          <label class="formLabel">头像</label>
+          <view >
+            <image class='user-avat' src='{{headImg}}'></image>
+            <input name="headImage" value='{{headImg}}' hidden='true'></input>
+          </view>
+      </view>
+       <view class="line"></view>
+      <!--账号-->
+      <view class="inputView name">               
+          <label class="formLabel">账号</label>
+          <input name="username" value='{{userInfo.name}}' class="inputText" disabled='true'/>
+      </view>
+      <view class="line"></view>
+      <!--昵称-->
+      <view class="inputView">               
+          <label class="formLabel">昵称</label>
+          <input name="nickName" value='{{userInfo.nickName}}' class="inputText" />
+      </view>
+      <view class="line"></view>
+      <!--真实姓名-->
+      <view class="inputView">               
+          <label class="formLabel">真实姓名</label>
+          <input name="realName" value='{{userInfo.realName}}' class="inputText" />
+      </view>
+      <view class="line"></view>
+      <!--性别-->
+      <view class="inputView">               
+          <label class="formLabel">性别</label>
+          <radio-group name="sex">
+            <radio class='sexRadio' value='男' checked='{{userInfo.sex == "男"}}'>男</radio>
+            <radio class='sexRadio' value='女' checked='{{userInfo.sex == "女"}}'>女</radio>
+            <radio class='sexRadio' value='保密' checked='{{userInfo.sex == "保密"||userInfo.sex ==null}}'>保密</radio>
+          </radio-group>
+      </view>
+      <view class="line"></view>
+      <!--手机号-->
+      <view class="inputView">               
+          <label class="formLabel">手机号</label>
+          <input name="phone" value='{{userInfo.phone}}' class="inputText" type='number'/>
+      </view>
+      <view class="line"></view>
+       <!--手机号-->
+      <view class="inputView">               
+          <label class="formLabel">地址</label>
+          <input name="address" value='{{userInfo.address}}' class="inputText" type='inputText'/>
+      </view>
+      <view class="line"></view>
+      <!--按钮-->
+      <view>
+          <button class="changeBtn" type="primary" form-type='submit'>确认修改</button>
+      </view>
+
+      <view>
+          <button class="goBackBtn" type="warn" bindtap="goBack">返回个人中心</button>
+      </view>
+    </form>
+  </view>
+</view>

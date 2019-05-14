@@ -1,0 +1,175 @@
+/*全部订单*/
+/*头部导航*/
+.navTopList{
+  margin: 0;
+  padding: 0;
+	display: flex;
+	width: 100%;
+	background: #fff;
+	border-bottom: 1rpx solid #f3f3f3;
+}
+.navTopList .order-info{
+
+	text-align: center;
+}
+.navTopList .order-info view{
+	width: 56rpx;
+	height: 56rpx;
+	margin-left:31rpx;
+}
+.navTopList .order-info text{
+	font-size: 34rpx;
+}
+.navTopList .order-info text.active{
+	color:#ff6662;
+}
+.navTopList .ywc{
+	flex:1;
+}
+.navTopList .ywc .ywc-icon{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .dfk{
+	flex:1;
+}
+.navTopList .dfk .dfk-icon{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .dfh{
+	flex:1;
+}
+.navTopList .dfh .dfh-icon{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .dsh{
+	flex:1;
+}
+.navTopList .dsh .dsh-icon{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .yqx{
+	flex:1;
+}
+.navTopList .yqx .yqx-icon{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .tkz{
+	flex:1;
+}
+.navTopList .tkz .tkz-icon{
+	
+	background-size: 56rpx 56rpx;
+}
+
+.navTopList .ywc .ywc-icon.active{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .dfk .dfk-icon.active{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .dfh .dfh-icon.active{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .dsh .dsh-icon.active{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .yqx .yqx-icon.active{
+	
+	background-size: 56rpx 56rpx;
+}
+.navTopList .tkz .tkz-icon.active{
+	
+	background-size: 56rpx 56rpx;
+}
+
+/*订单列表*/
+.orderDetails{
+	background: #fff;
+	border-bottom: 20rpx solid #f3f3f3;
+}
+.orderListTitle{
+	height: 100rpx;
+	line-height: 100rpx;
+	border-bottom: 1rpx solid #f3f3f3;
+}
+.orderListTitle .userImg{
+	float: left;
+	width: 70rpx;
+	height: 70rpx;
+	border-radius: 35rpx;
+	margin:15rpx;
+}
+.orderListTitle .userImg image{
+	border-radius: 35rpx;
+	width: 100%;
+	height: 100%;
+}
+.orderListTitle .userName{
+	padding-right: 50rpx;
+
+	background-size: 35rpx 35rpx;
+}
+.orderListTitle .orderStatus{
+	float: right;
+	margin-right: 20rpx;
+	color: #2f7b27;
+	font-size: 34rpx;
+}
+.orderListDetails{
+	display: flex;
+	height: 180rpx;
+	border-bottom: 1rpx solid #f3f3f3;
+}
+.orderListDetails .productImg{
+	flex: 1;
+	height: 140rpx;
+	margin-top: 20rpx;
+	margin-left: 20rpx;
+}
+.orderListDetails .productImg image{
+	width: 100%;
+	height: 100%;
+}
+.orderListDetails .productInfo{
+	flex: 4;
+	padding: 20rpx 30rpx;
+}
+.orderListDetails .productInfo .productTitle{
+	overflow: hidden;
+	text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.orderListDetails .productInfo .productQuantity{
+	float: right;
+}
+.productCount{
+	height: 80rpx;
+	line-height: 80rpx;
+	border-bottom: 1rpx solid #f3f3f3;
+}
+.productCount .subtotal{
+	float: right;
+	margin-right: 30rpx;
+}
+.productCount .operation{
+	float: left;
+  color: #e29d35;
+	margin-left: 30rpx;
+}
+.hover-update{
+  position: relative;
+  top: 5rpx;
+  left: 5rpx;
+  box-shadow:0px 0px 4p inset; 
+}

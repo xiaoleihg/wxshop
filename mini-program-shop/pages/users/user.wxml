@@ -1,0 +1,23 @@
+<view class='main'>
+  <view class='header' bindtap='toUserDetail'>
+    <image class='user-avat' src='{{userInfo.headImage}}'></image>
+    <text class='user-nickName'>{{userInfo.nickName}}</text>
+  </view>
+  <view class='body'>
+    <view class='box-title'>我的订单</view>
+    <view class='order-box'>
+      <block wx:for='{{orderCateList}}'>
+        <view class='order-cate'  bindtap='findByStatus' id='{{item.status}}'>
+          <image src='{{item.orderIconUrl}}' class='order-img' ></image>
+          <view class='order-text'><text>{{item.orderText}}</text></view>
+        </view>
+      </block>
+    </view>
+
+    <view class='box-title interval'>联系客服</view>
+    <view class='box-title'>关于我们</view>
+  </view>
+  <view>
+    <button class="logoutBtn" type="warn" bindtap="logout">退出登录</button>
+  </view>
+</view>

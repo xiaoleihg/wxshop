@@ -1,0 +1,39 @@
+<view class="container">
+<!-- 首页轮播特效 -->
+  <swiper class='carousel' autoplay='true' indicator-dots='true'>
+  <block wx:for="{{swiperImg}}">
+    <swiper-item>
+      <image src='{{item}}'></image>
+    </swiper-item>
+  </block>  
+  </swiper>
+  <!-- 正文内容 -->
+  <view class='box'> 
+    <!-- 全部商品展示 -->
+    <view class='goods'>
+    <!-- 商品展示标题 -->
+      <view class='goodsTitle'>
+        <text>全部商品</text>
+      </view>
+      <!--商品具体展示-->
+      <view class='goods-content'>
+        <block wx:for="{{goodsArray}}">
+          <view class='goods-item' bindtap='toDetails' id="{{item.gid}}">
+            <view class="goods-img">
+              <image src="{{item.goodsImg}}" class="index_img"></image>
+            </view>
+            <view class="goods_bottom">
+              <text>{{item.goodsName}}</text>
+              <view></view>
+              <text class='price'>单价：{{item.price}}￥</text>
+              <view class="addToCart" catchtap="addToCart" hover-class='hover-add' id='{{item.gid}}'>
+                <image src="../../image/common/toCart.png"></image>
+            </view>
+            </view>
+          </view>
+        </block>
+      </view> 
+    </view> <!-- 全部商品展示完结 -->
+  </view><!-- box完结 -->
+
+</view>

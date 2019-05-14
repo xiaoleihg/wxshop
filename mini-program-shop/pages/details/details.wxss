@@ -1,0 +1,69 @@
+.container{
+  margin: 0;
+  padding: 0;
+}
+.goods-img{
+  border: 1px solid #FFA500;
+}
+.goods-info{
+  margin: 20rpx 0 0 0;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+  background-color: #69C3AA;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width:100%;
+  height: 50px;
+}
+.goods-bottom-btn{
+  width: 25%;
+  float: right;
+  height: 50px;
+  font-size: 12px;
+  line-height: 50px;
+  text-align: center;
+  color: #FFF;
+}
+.red {
+  background-color: #FFA500;
+}
+.green {
+  background-color: #69C3AA;
+}
+.blue {
+  background-color: #00aaef;
+}
+.seller-info{
+  margin: 20rpx;
+  width: 90%;
+  height: 120rpx;
+  border: 1px solid wheat;
+}
+.seller-info image{
+  float: left;
+  width: 80rpx;
+  height: 80rpx;
+  margin: 20rpx;
+}
+.seller-info .shop-name{
+  float: left;
+  margin-top: 40rpx;
+}
+.seller-info .intostore{
+  float: right;
+  background-color: #f13e26;
+  width: 200rpx;
+  height: 60rpx;
+  margin:30rpx;
+  text-align: center;
+  border-radius: 30rpx;
+}
+.hover-toshop{
+  position: relative;
+  top: 3rpx;
+  left: 3rpx;
+  box-shadow:0px 0px 8px rgba(0, 0, 0, .1) inset; 
+}

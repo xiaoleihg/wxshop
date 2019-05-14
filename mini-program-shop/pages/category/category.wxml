@@ -1,0 +1,23 @@
+<view class="main">
+  <view class="categroy-left">
+    <view wx:for="{{category}}" wx:key="index" data-id="{{item.cid}}" data-index="{{index}}"
+        bindtap="findByCate"
+        class="cate-list {{curIndex === index?'on':''}}">{{item.cname}}
+    </view>
+  </view>
+  <view class="categroy-right">
+    <block wx:for="{{goodsArray}}">
+      <view class='goods-item' bindtap='toDetails' id="{{item.gid}}">
+        <view class="goods-img">
+          <image src="{{item.goodsImg}}" class="index_img"></image>
+        </view>
+        <view class="goods_bottom">
+          <text>{{item.goodsName}}</text>
+          <view></view>
+          <text class='price'>单价：{{item.price}}￥</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+</view>

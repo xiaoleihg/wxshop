@@ -1,0 +1,38 @@
+<view class="navTopList">
+  <block wx:for='{{orderStatus}}'>
+    <view class="ywc order-info" bindtap='findByStatus' data-status='{{item.status}}'>
+      <view class="ywc-icon {{currentStatus == item.status?'active':''}}"></view>
+      <text class="ywc-txt {{currentStatus == item.status?'active':''}}">{{item.orderText}}</text>
+    </view>
+  </block>
+</view>
+
+<view bindtap="toOrderDetail" class="orderDetails" wx:for='{{orderItemList}}' id='{{item.orderItemId}}'>
+  <view class="orderListTitle">
+    <view class="userImg"><image src="../../../image/common/store.png"></image></view>
+    <text class="userName">{{item.goods.business.shopName}}</text>
+    <text class="orderStatus" hidden="{{item.status != 0}}">待付款</text>
+    <text class="orderStatus" hidden="{{item.status != 1}}">待发货</text>
+    <text class="orderStatus" hidden="{{item.status != 2}}">待收货</text>
+    <text class="orderStatus" hidden="{{item.status != 3}}">已完成</text>
+  </view>
+	<view class="orderListDetails">
+		<view class="productImg">
+			<image src="{{item.goods.goodsImg}}"></image>
+		</view>
+		<view class="productInfo">
+			<view class="productTitle">{{item.goods.goodsName}}</view>
+			<text class="productPrice">￥{{item.goods.price}}</text>
+			<text class="productQuantity">x{{item.count}}</text>
+		</view>
+	</view>
+	<view class="productCount">
+		<view class='subtotal'>合计：￥<text>{{item.subtotal}}</text></view>
+    <view class='operation' hidden="{{item.status != 0}}" catchtap='changeStatus' data-status='{{item.status}}' data-id='{{item.orderItemId}}' hover-class='hover-update'>立即付款</view>
+    <view class='operation' hidden="{{item.status != 1}}">等待发货</view>
+    <view class='operation' hidden="{{item.status != 2}}" catchtap='changeStatus' data-status='{{item.status}}' data-id='{{item.orderItemId}}' hover-class='hover-update'>确认收货</view>
+    <view class='operation' hidden="{{item.status == 3}}" bindtap='changeStatus'></view>
+
+    
+	</view>
+</view>	

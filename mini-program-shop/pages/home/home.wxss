@@ -1,0 +1,76 @@
+/* pages/home/home.wxss */
+.container{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* 轮播 */
+.carousel{
+  width: 100%;
+  height: 110px;
+}
+.carousel swiper-item,.carousel swiper-item image{
+  width: 100%;
+}
+/* 正文 */
+.box{
+  width: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+.category{
+  width: 100%;
+}
+
+/* 商品展示 */
+.goods{
+  background: #fff;
+}
+.goods .goodsTitle{
+  margin-top: 5px;
+  width: 100%;
+  background: #ccc8c8;
+}
+.goods .goodsTitle text{
+  font-size: 25px;
+}
+.goods-item {
+  width: 44%;
+  float: left;
+  height: 400rpx;
+  margin-left: 3%;
+  margin-bottom: 10px;
+  background: whitesmoke;
+  border: 2rpx solid tan;
+}
+.goods-img image{
+  height:250rpx;
+  margin: 0;
+  padding: 0;
+}
+.index_img {
+  width: 100%;
+  height: 200px;
+}
+.goods_bottom {
+  margin: 0;
+  padding:0;
+  text-align: left;
+  font-size: 13px;
+  color: #737373; 
+  height: 15px;
+}
+.addToCart{
+  float: right;
+}
+.addToCart image{
+  width: 80rpx;
+  height: 80rpx;
+}
+.hover-add{
+  background-color: #29cc00;
+  opacity: 0.7;
+}

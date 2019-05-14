@@ -1,0 +1,54 @@
+<view class="order-box">
+  <block wx:for="{{orderItems}}" wx:key="{{index}}">
+    <view class="orderDetails">
+      <view class="orderListTitle">
+        <view class="storeImg"><image src="../../../image/common/store.png"></image></view>
+        <text class="storeName">{{item.business.shopName}}</text>
+      </view>
+      <view class="orderListDetails">
+        <view class="productImg" >
+          <image src="{{item.goodsImg}}" bindtap='toDetails' id='{{item.gid}}'></image>
+        </view>
+        <view class="productInfo">
+          <view class="productTitle">{{item.goodsName}}</view>
+          <text class="productPrice">{{item.price}}￥</text>
+          <text class="productQuantity">x{{item.count}}</text>
+        </view>
+      </view>
+      <view class="productCount">
+        <view>合计：￥<text>{{item.count*item.price}}</text></view>
+      </view>
+    </view>
+  </block>
+</view>
+  
+<view class='userInfo'>
+    <view>用户信息(如有需要，可修改收货地址)</view>
+    <form bindsubmit='createOrder'>
+      <!--账号-->
+      <view class="inputView name">               
+          <label class="formLabel">账号</label>
+          <input name="username" value='{{userInfo.name}}' class="inputText" disabled='true'/>
+      </view>
+      <view class="line"></view>
+      <!--手机号-->
+      <view class="inputView">               
+          <label class="formLabel">联系电话</label>
+          <input name="phone" value='{{userInfo.phone}}' class="inputText" type='number' disabled='true'/>
+      </view>
+      <view class="line"></view>
+       <!--手机号-->
+      <view class="inputView">               
+          <label class="formLabel">收货地址</label>
+          <input name="address" value='{{userInfo.address}}' class="inputText address" type='inputText'/>
+      </view>
+      <view class="line"></view>
+      <!--按钮-->
+      <view class="order-footer">
+        <text class="order-toatl-price">总计：{{total}}￥</text>
+        <button class="order-icon" form-type='submit'>提交订单</button>
+      </view>
+    </form>
+</view>
+
+
