@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.dao.ManagerDao">
+    <resultMap id="manager" type="Manager">
+        <id column="mid" property="mid" javaType="Integer"/>
+        <result column="mname" property="name" javaType="String"/>
+        <result column="password" property="password" javaType="String"/>
+    </resultMap>
+<select id="select" resultMap="manager">
+    select mid,mname,password
+    from manager
+    where mname=#{name} and password=#{password}
+</select>
+</mapper>

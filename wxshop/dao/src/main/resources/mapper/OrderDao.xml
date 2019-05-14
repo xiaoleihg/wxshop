@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.dao.OrderDao">
+    <resultMap id="orderMap" type="Orders">
+        <id property="oid" column="oid" javaType="String"/>
+        <result property="total" column="total" javaType="Double"/>
+        <result property="address" column="address" javaType="String"/>
+        <result property="createTime" column="create_time"/>
+        <result property="endTime" column="end_time"/>
+        <association property="user" javaType="User" column="user_id">
+            <id column="uid" property="id" javaType="String"/>
+            <result column="username" property="name"/>
+            <result column="real_name" property="realName"/>
+            <result column="head_img" property="headImage"/>
+            <result column="phone" property="phone"/>
+        </association>
+        <collection property="orderItemList" ofType="OrderItem">
+            <id column="order_item_id" property="orderItemId" javaType="Integer"/>
+            <result column="goods_id" property="goodsId"/>
+            <result column="num" property="count"/>
+            <result column="subtotal" property="subtotal"/>
+            <result column="order_id" property="orderId"/>
+            <result property="status" column="status"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="orderItemMap" type="OrderItem">
+        <id property="orderItemId" column="order_item_id" javaType="Integer"/>
+        <result property="goodsId" column="goods_id" javaType="String"/>
+        <result property="count" column="num" javaType="Integer"/>
+        <result property="orderId" column="order_id" javaType="String"/>
+        <result property="subtotal" column="subtotal" javaType="Double"/>
+        <result property="status" column="status" javaType="Integer"/>
+        <association property="goods" javaType="Goods" column="goods_id" select="com.huang.dao.GoodsDao.selectById"/>
+
+    </resultMap>
+
+    <insert id="insert" parameterType="Orders">
+        insert into orders(oid,user_id,total,create_time,address)
+        values(#{orders.oid},#{orders.user.id},#{orders.total},#{orders.createTime},#{orders.address});
+
+        insert into order_item(order_item_id,goods_id,num,subtotal,order_id,status)
+        values <foreach collection="orders.orderItemList" item="orderItem" separator=",">
+        (#{orderItem.orderItemId},#{orderItem.goodsId},#{orderItem.count},#{orderItem.subtotal},#{orders.oid},#{orderItem.status})
+    </foreach>
+    </insert>
+
+    <update id="updateOrderStatus">
+        update order_item
+        set status = #{status}
+        where order_id = #{orderId}
+    </update>
+
+    <update id="updateItemStatus">
+        update order_item
+        set status = #{status}
+        where order_item_id = #{orderItemId}
+    </update>
+
+    <select id="selectAll" resultMap="orderMap">
+        select o.oid,o.user_id,o.total,o.create_time,u.uid,u.username
+        from orders o
+        left join user u
+        on o.user_id = u.uid
+    </select>
+
+    <select id="selectOrderItemById" resultMap="orderItemMap">
+        select o.order_item_id,o.goods_id,o.num,o.subtotal,o.status,g.gname,g.goods_img,g.price
+        from order_item o
+        left join goods g
+        on g.gid = o.goods_id
+        where o.order_id = #{oid}
+    </select>
+
+    <select id="selectByOrderId" resultMap="orderMap">
+        select o.oid,o.total,o.create_time,o.address,u.uid,u.username,u.phone
+        from orders o
+        left join user u
+        on o.user_id = u.uid
+        where o.oid = #{oid}
+    </select>
+
+    <select id="selectOrderItemByBusinessId" resultMap="orderItemMap">
+        select o.order_item_id,o.goods_id,o.order_id,o.num,o.subtotal,o.status,g.gname,g.goods_img,g.price
+        from order_item o
+        left join goods g
+        on g.gid = o.goods_id
+          left join business b
+          on b.bid = g.business_id
+              left join orders os
+              on o.order_id = os.oid
+          where b.bid = #{businessId}
+          ORDER BY os.create_time DESC
+    </select>
+    <select id="selectOrderItemByBidAndStatus" resultMap="orderItemMap">
+        select o.order_item_id,o.goods_id,o.order_id,o.num,o.subtotal,o.status,g.gname,g.goods_img,g.price
+        from order_item o
+        left join goods g
+        on g.gid = o.goods_id
+          left join business b
+          on b.bid = g.business_id
+              left join orders os
+              on o.order_id = os.oid
+          where b.bid = #{businessId} and o.status = #{status}
+          ORDER BY os.create_time DESC
+    </select>
+
+
+    <select id="selectOrderItemByUserId" resultMap="orderItemMap">
+        select o.order_item_id,o.goods_id,o.order_id,o.num,o.subtotal,o.status,g.gname,g.goods_img,g.price
+        from order_item o
+        left join goods g
+        on g.gid = o.goods_id
+          left join orders os
+          on o.order_id = os.oid
+          where os.user_id = #{userId}
+          ORDER BY os.create_time DESC
+    </select>
+
+    <select id="selectOrderItemByUidAndStatus" resultMap="orderItemMap">
+        select o.order_item_id,o.goods_id,o.order_id,o.num,o.subtotal,o.status,g.gname,g.goods_img,g.price
+        from order_item o
+        left join goods g
+        on g.gid = o.goods_id
+          left join orders os
+          on o.order_id = os.oid
+          where os.user_id = #{userId} and o.status = #{status}
+          ORDER BY os.create_time DESC
+    </select>
+
+
+    <select id="selectById" resultMap="orderItemMap">
+        select o.order_item_id,o.goods_id,o.order_id,o.num,o.subtotal,o.status,
+          g.gname,g.goods_img,g.price,b.name,b.shop_name,b.phone
+        from order_item o
+        left join goods g
+        on g.gid = o.goods_id
+        left join business b
+          on b.bid = g.business_id
+          where o.order_item_id = #{id}
+    </select>
+</mapper>

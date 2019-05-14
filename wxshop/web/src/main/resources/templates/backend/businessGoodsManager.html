@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>WxShop后台管理系统</title>
+    <link rel="stylesheet"  th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet"  th:href="@{/css/index.css}" />
+    <link rel="stylesheet"  th:href="@{/css/file.css}" />
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/userSetting.js}"></script>
+    <script th:src="@{/layer/layer.js}"></script>
+    <script th:src="@{/js/bootstrapValidator.min.js}"></script>
+    <script th:src="@{/js/bootstrap-paginator.js}"></script>
+    <link rel="stylesheet"  th:href="@{/css/bootstrapValidator.min.css}" />
+    <link rel="stylesheet"  th:href="@{/css/zshop.css}" />
+    <script th:inline="javascript">
+        $(function(){
+            //分页
+            $('#pagination').bootstrapPaginator({
+                bootstrapMajorVersion:3,
+                currentPage:[[${pageInfo.pageNum}]],
+                totalPages:[[${pageInfo.pages}]],
+                pageUrl:function(type,page,current){
+                    return [[@{./list}]]+'?pageNum='+  page;
+                },
+                itemTexts:function(type,page,current){
+                    switch (type) {
+                        case "first":
+                            return "首页";
+                        case "prev":
+                            return "上一页";
+                        case "next":
+                            return "下一页";
+                        case "last":
+                            return "末页";
+                        case "page":
+                            return page;
+                    }
+                },
+            })
+            //上传图像预览
+            $('#product-image').on('change',function() {
+                $('#img').attr('src', window.URL.createObjectURL(this.files[0]));
+            });
+            $('#pro-image').on('change',function() {
+                $('#img2').attr('src', window.URL.createObjectURL(this.files[0]));
+            });
+
+            //服务端提示消息
+            var successMsg=[[${successMsg}]];
+            var errorMsg=[[${errorMsg}]];
+            if(successMsg!='' && successMsg!=null){
+                layer.msg(successMsg,{
+                    time:2000,
+                    skin:'success'
+                })
+            }
+            if(errorMsg!='' && errorMsg!=null){
+                layer.msg(errorMsg,{
+                    time:2000,
+                    skin:'errors'
+                })
+            }
+
+            //使用bootstrap validator插件进行客户端数据校验
+            $('.frmAddProduct').bootstrapValidator({
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields:{
+                    goodsName:{
+                        validators:{
+                            notEmpty:{
+                                message:'商品名称不能为空'
+                            }
+                        }
+                    },
+                    price:{
+                        validators:{
+                            notEmpty:{
+                                message:'商品价格不能为空'
+                            },
+                            regexp:{
+                                regexp:/^\d+(\.\d+)?$/,
+                                message:'商品格式不正确'
+                            }
+                        }
+                    },
+                    stock:{
+                        validators:{
+                            notEmpty:{
+                                message:'商品库存不能为空'
+                            }
+                        }
+                    },
+                    file:{
+                        validators:{
+                            notEmpty:{
+                                message:'请选择商品图片'
+                            }
+                        }
+                    },
+                    productTypeId:{
+                        validators:{
+                            notEmpty:{
+                                message:'请选择商品类型'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        //显示删除模态框
+        function showDeleteModal(id){
+            $('#deleteProductId').val(id);
+            $('#deleteProductModal').modal('show');
+        }
+        //删除商品
+        function deleteGoods(){
+            $.post(
+                [[@{./remove}]],
+                {'id':$('#deleteProductId').val()},
+                function(result){
+                    if(result.status==1){
+                        layer.msg('删除成功',{
+                            time:2000,
+                            skin:'success'
+                        },function(){
+                            //重新加载数据
+                            location.href=[[@{./list}]]+'?pageNum='+[[${pageInfo.pageNum}]];
+                        })
+                    }else{
+                        layer.msg('删除失败',{
+                            time:2000,
+                            skin:'errors'
+                        })
+                    }
+                }
+            );
+        }
+        //显示商品信息
+        function showGoods(id){
+            $.post(
+                [[@{./findById}]],
+                {'id':id},
+                function(result){
+                    if(result.status==1){
+                        $('#pro-num').val(result.data.gid);
+                        $('#pro-name').val(result.data.goodsName);
+                        $('#pro-stock').val(result.data.stock);
+                        $('#pro-price').val(result.data.price);
+                        $('#pro-status').val(result.data.isValid);
+                        $('#pro-version').val(result.data.version);
+                        $('#pro-type').val(result.data.category.cid);
+                        $('#img2').attr('src',result.data.goodsImg);
+                        $('#pro-info').val(result.data.info);
+                    }
+                }
+            );
+        }
+        //修改商品的状态
+        function modifyStatus(id,btn){
+            $.get(
+                [[@{./modifyStatus}]],
+                {'id':id},
+                function(result){
+                    if(result.status==1){
+                        //局部刷新
+                        let $td=$(btn).parent().prev().prev();
+                        if($td.text().trim()=='已上架'){
+                            $td.text('已下架');
+                            $(btn).val('上架').removeClass('btn-danger').addClass('btn-success');
+                        }else{
+                            $td.text('已上架');
+                            $(btn).val('下架').removeClass('btn-success').addClass('btn-danger');
+                        }
+                    }else{
+                        layer.msg('系统异常',{
+                            time:2000,
+                            skin:'errors'
+                        })
+                    }
+                }
+            );
+        }
+    </script>
+</head>
+
+<body>
+    <div class="panel panel-info" id="userPic">
+        <div class="panel-heading">
+            <h3 class="panel-title">商品管理</h3>
+        </div>
+        <div class="panel-body">
+            <input type="button" value="添加商品" class="btn btn-primary" id="doAddPro">
+            <br>
+            <br>
+            <div class="show-list">
+                <table class="table table-bordered table-hover" style='text-align: center;'>
+                    <thead>
+                        <tr class="text-danger">
+                            <th class="text-center">商品编号</th>
+                            <th class="text-center">商品名称</th>
+                            <th class="text-center">商品价格</th>
+                            <th class="text-center">商品库存</th>
+                            <th class="text-center">商品状态</th>
+                            <th class="text-center">所属分类</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb">
+                        <tr th:each="goods:${pageInfo.list}">
+                            <td th:text="${goods.gid}"></td>
+                            <td th:text="${goods.goodsName}"></td>
+                            <td th:text="${goods.price}"></td>
+                            <td th:text="${goods.stock}"></td>
+                            <td th:text="${goods.isValid==1?'已上架':'已下架'}"></td>
+                            <td th:text="${goods.category.cname}"></td>
+                            <td class="text-center">
+                                <input type="button" class="btn btn-warning btn-sm doProModify" th:onclick="showGoods([[${goods.gid}]])"value="修改">
+                                <input type="button" class="btn btn-warning btn-sm doProDelete" th:onclick="showDeleteModal([[${goods.gid}]])" value="删除">
+                                <th:block th:if="${goods.isValid==1}">
+                                    <input type="button" class="btn btn-danger btn-sm doProTypeDisable" value="下架" th:onclick="modifyStatus([[${goods.gid}]],this)">
+                                </th:block>
+                                <th:block th:if="${goods.isValid==0}">
+                                    <input type="button" class="btn btn-success btn-sm doProTypeDisable" value="上架" th:onclick="modifyStatus([[${goods.gid}]],this)">
+                                </th:block>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center"><ul id="pagination"></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加商品 start -->
+    <div class="modal fade" tabindex="-1" id="Product">
+        <!-- 窗口声明 -->
+        <div class="modal-dialog modal-lg">
+            <!-- 内容声明 -->
+            <form th:action="@{./add}" class="form-horizontal frmAddProduct" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <!-- 头部、主体、脚注 -->
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">添加商品</h4>
+
+                    </div>
+                    <div class="modal-body text-center row">
+                        <div class="col-sm-8">
+                            <input type="hidden" name="pageNum" th:value="${pageInfo.pageNum}">
+                            <div class="form-group">
+                                <label for="product-name" class="col-sm-4 control-label">商品名称：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="product-name" name="goodsName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-price" class="col-sm-4 control-label">商品价格：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="product-price" name="price">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-stock" class="col-sm-4 control-label">商品库存：</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control" id="product-stock" name="stock">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-image" class="col-sm-4 control-label">商品图片：</label>
+                                <div class="col-sm-8">
+                                    <a href="javascript:;" class="file">选择文件
+                                        <input type="file" name="file" id="product-image">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-type" class="col-sm-4 control-label">商品类型：</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="categoryId" id="product-type">
+                                        <option value="">--请选择--</option>
+                                        <th:block th:each="category:${categories}">
+                                            <option th:value="${category.cid}" th:text="${category.cname}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-info" class="col-sm-4 control-label">商品详情：</label>
+                                <div class="col-sm-8">
+                                    <textarea class="form-control" id="product-info" name="info"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <!-- 显示图像预览 -->
+                            <img style="width: 160px;height: 180px;" id="img">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">添加</button>
+                        <button class="btn btn-primary cancel" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- 添加商品 end -->
+    
+    <!-- 修改商品 start -->  
+    <div class="modal fade" tabindex="-1" id="myProduct">
+        <!-- 窗口声明 -->
+        <div class="modal-dialog modal-lg">
+            <!-- 内容声明 -->
+            <form th:action="@{./edit}" class="form-horizontal " method="post" enctype="multipart/form-data">
+            <div class="modal-content">
+                <!-- 头部、主体、脚注 -->
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">修改商品</h4>
+                </div>
+                <div class="modal-body text-center row">
+                    <div class="col-sm-8">
+                        <input type="hidden" name="pageNum" th:value="${pageInfo.pageNum}">
+                        <div class="form-group">
+                            <label for="pro-num" class="col-sm-4 control-label">商品编号：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="pro-num" name="gid" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-name" class="col-sm-4 control-label">商品名称：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="pro-name" name="goodsName">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-price" class="col-sm-4 control-label">商品价格：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="pro-price" name="price">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-stock" class="col-sm-4 control-label">商品库存：</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="pro-stock" name="stock">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-status" class="col-sm-4 control-label">商品状态：</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="pro-status" name="isValid">
+                                    <option>请选择</option>
+                                    <option th:value="0" th:text="下架"></option>
+                                    <option th:value="1" th:text="上架"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-image" class="col-sm-4 control-label">商品图片：</label>
+                            <div class="col-sm-8">
+                                <a class="file">
+                                    选择文件 <input type="file" name="file" id="pro-image">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-type" class="col-sm-4 control-label">商品类型：</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" id="pro-type" name="categoryId">
+                                    <option>请选择</option>
+                                    <th:block th:each="category:${categories}">
+                                        <option th:value="${category.cid}" th:text="${category.cname}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pro-info" class="col-sm-4 control-label">商品详情：</label>
+                            <div class="col-sm-8">
+                                <textarea class="form-control" id="pro-info" name="info"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <!-- 显示图像预览 -->
+                        <img style="width: 160px;height: 180px;" id="img2">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary updatePro" type="submit">修改</button>
+                    <button class="btn btn-primary cancel" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <!-- 修改商品 end -->
+    <!-- 确认删除 start -->
+    <div class="modal fade" tabindex="-1" id="deleteProductModal">
+        <!-- 窗口声明 -->
+        <div class="modal-dialog">
+            <!-- 内容声明 -->
+            <div class="modal-content">
+                <!-- 头部、主体、脚注 -->
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">提示消息</h4>
+                </div>
+                <div class="modal-body text-center row">
+                    <h4>确认要删除该商品吗</h4>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="deleteProductId">
+                    <button class="btn btn-primary updatePro" data-dimiss="modal" onclick="deleteGoods()">确认</button>
+                    <button class="btn btn-primary cancel" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 确认删除 end -->
+</body>
+
+</html>

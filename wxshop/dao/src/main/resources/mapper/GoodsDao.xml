@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.dao.GoodsDao">
+    <resultMap id="goodsMap" type="Goods">
+        <id property="gid" column="gid" javaType="String"/>
+        <result property="goodsName" column="gname" javaType="String"/>
+        <result property="price" column="price" javaType="Double"/>
+        <result property="stock" column="stock" javaType="Integer"/>
+        <result property="isValid" column="is_valid" javaType="Integer"/>
+        <result property="goodsImg" column="goods_img" javaType="String"/>
+        <result property="info" column="info" javaType="String"/>
+        <association property="category" javaType="Category" column="category_id" >
+            <id property="cid" column="cid"/>
+            <result property="cname" column="cname"/>
+        </association>
+        <association property="business" javaType="Business" column="business_id" >
+            <id column="bid" property="id"/>
+            <result column="name" property="name"/>
+            <result column="password" property="password"/>
+            <result column="shop_name" property="shopName"/>
+            <result column="phone" property="phone"/>
+        </association>
+    </resultMap>
+
+
+    <sql id="goodsColumn">
+        gid,gname,price,stock,is_valid,goods_img,info,category_id,business_id
+    </sql>
+
+    <sql id="goodsColumnExceptId">
+        gname,price,stock,is_valid,goods_img,info,category_id,business_id
+    </sql>
+
+
+    <insert id="insert" parameterType="Goods">
+        insert into goods(<include refid="goodsColumn"/>)
+        values
+          (#{gid},#{goodsName},#{price},#{stock},#{isValid},#{goodsImg},#{info},#{category.cid},#{business.id})
+    </insert>
+
+
+    <select id="selectAll" resultMap="goodsMap">
+        select g.gid,g.gname,g.price,g.stock,g.is_valid,g.category_id,c.cid,c.cname,b.bid,b.name
+        from goods g
+          left join category c
+          on g.category_id=c.cid
+            left join business b
+            on g.business_id=b.bid
+    </select>
+
+
+    <select id="selectAllForCustomer" resultMap="goodsMap">
+        select g.gid,g.gname,g.price,g.stock,g.goods_img,g.business_id,b.bid
+         from goods g
+          left join business b
+         on g.business_id = b.bid
+        where is_valid = 1
+    </select>
+
+
+    <select id="selectAllForBusiness" resultMap="goodsMap" parameterType="Business">
+        select g.gid,g.gname,g.price,g.stock,g.is_valid,g.goods_img,g.info,g.category_id,c.cid,c.cname
+         from goods g
+         left join category c
+         on g.category_id = c.cid
+         left join business b
+         on g.business_id = b.bid
+        where g.business_id = #{id}
+    </select>
+
+    <select id="selectAllCustomerByBid" resultMap="goodsMap">
+        select g.gid,g.gname,g.price,g.goods_img,g.info,g.category_id,c.cid,c.cname,b.bid,b.name,b.shop_name
+         from goods g
+         left join category c
+         on g.category_id = c.cid
+         left join business b
+         on g.business_id = b.bid
+        where g.business_id = #{businessId} and g.is_valid = 1
+    </select>
+
+    <select id="selectByName" resultMap="goodsMap">
+        select <include refid="goodsColumn"/>
+        from goods
+        where gname=#{name}
+    </select>
+
+
+    <select id="selectById" resultMap="goodsMap">
+        select g.gid,g.gname,g.price,g.stock,g.is_valid,g.goods_img,g.info,g.category_id,c.cid,c.cname,b.bid,b.name,b.shop_name,b.phone
+        from goods g
+        left join category c
+        on g.category_id=c.cid
+        left join business b
+        on g.business_id = b.bid
+        where gid=#{id}
+    </select>
+
+
+    <select id="selectByCategory" resultMap="goodsMap">
+        select gid,gname,goods_img,price,category_id,business_id
+        from goods
+        where category_id=#{categoryId} and is_valid=1
+    </select>
+
+
+    <select id="selectByGidList" resultMap="goodsMap">
+        select g.gid,g.gname,g.price,g.goods_img,g.business_id,b.bid,b.name,b.shop_name
+        from goods g
+        left join business b
+        on g.business_id = b.bid
+        where g.gid in (<foreach collection="gidList" item="gid" separator=",">
+              #{gid}
+              </foreach>)
+    </select>
+
+
+    <select id="selectByParams" parameterType="com.huang.params.GoodsParams" resultMap="goodsMap">
+        select <include refid="goodsColumn"/>
+        from goods
+        <where>
+            <if test="name!=null and name!=''">
+                and name like concat(concat('%',#{name}),'%')
+            </if>
+            <if test="minPrice!=null and maxPrice!=null">
+                and price between #{minPrice} and #{maxPrice}
+            </if>
+            <if test="minPrice!=null">
+                and price &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice!=null">
+                and price &lt;=#{maxPrice}
+            </if>
+            <if test="categoryId!=null and categoryId!=-1">
+                and category_id=#{categoryId}
+            </if>
+        </where>
+    </select>
+
+
+
+    <update id="update" parameterType="Goods">
+        update goods
+        <set>
+            <if test="goodsName!=null">gname=#{goodsName},</if>
+            <if test="price!=null">price=#{price},</if>
+            <if test="stock!=null">stock=#{stock},</if>
+            <if test="isValid!=null">is_valid=#{isValid},</if>
+            <if test="goodsImg!=null">goods_img=#{goodsImg},</if>
+            <if test="info!=null">info=#{info},</if>
+            <if test="category!=null">category_id=#{category.cid}</if>
+        </set>
+        where gid=#{gid}
+    </update>
+
+
+
+    <update id="updateForBuy" parameterType="java.util.List">
+        <foreach collection="orderItems" item="orderItem" separator=";">
+            update goods
+            <set>
+                stock = stock - #{orderItem.count}
+            </set>
+            where gid = #{orderItem.goodsId}
+        </foreach>
+    </update>
+
+
+
+    <update id="updateStatus">
+        update goods
+        set is_Valid=#{status}
+        where gid=#{id}
+    </update>
+
+
+    <delete id="deleteById">
+        delete from goods
+        where gid=#{id}
+    </delete>
+
+</mapper>

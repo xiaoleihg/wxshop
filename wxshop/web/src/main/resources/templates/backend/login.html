@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>WxShop-超级后台管理系统</title>
+    <meta charset="utf-8">
+	  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+	  <link rel="stylesheet" th:href="@{/css/mycss.css}" />
+	  <script type="text/javascript" th:href="@{/js/jquery.min.js}"></script>
+	  <script th:src="@{/js/jquery.js}"></script>
+	  <script type="text/javascript" th:href="@{/js/bootstrap.min.js}"></script>
+	  <script th:src="@{/layer/layer.js}"></script>
+  </head>
+  <body>
+    <div class="container div-signin">
+      <div class="panel panel-primary div-shadow">
+	    <div class="panel-heading">
+	    	<h3>WxShop商城系统</h3>
+	    	<span>WxSHOP Manager System</span>
+	    </div>
+	    <div class="panel-body">
+	      <!-- login form start -->
+	      <form th:action="@{./login}" class="form-horizontal" th:method="post" onSubmit="return confirm();">
+		     <div class="form-group">
+		       <label class="col-sm-3 control-label">用户名：</label>
+		       <div class="col-sm-9">
+		         <input class="form-control loginNme" type="text" placeholder="请输入用户名" th:name="name">
+		       </div>
+		    </div>
+		     <div class="form-group">
+		       <label class="col-sm-3 control-label">密&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+		       <div class="col-sm-9">
+		         <input class="form-control pwd" type="password" placeholder="请输入密码" th:name="password">
+			   </div>
+			 </div>
+				 <div class="form-group">
+					 <div class="col-sm-12 text-center">
+					 <label class="radio-inline col-sm-5">
+						 <input type="radio" th:name="role" id="inlineRadio1" value="0" class="role"> 管理员
+					 </label>
+					 <label class="radio-inline col-sm-5" >
+						 <input type="radio" th:name="role" id="inlineRadio2" value="1" class="role"> 店家
+					 </label>
+					 </div>
+		    </div>
+		    <div class="form-group">
+		       <div class="col-sm-3">
+		       </div>
+		       <div class="col-sm-9 padding-left-0">
+		       	 <div class="col-sm-4">
+			         <button type="submit" class="btn btn-primary btn-block">登&nbsp;&nbsp;陆</button>
+		       	 </div>
+		       	 <div class="col-sm-4">
+			         <button type="reset" class="btn btn-primary btn-block">重&nbsp;&nbsp;置</button>
+		       	 </div>
+		       	 <div class="col-sm-4">
+			         <a class="btn btn-link btn-block" th:href="@{./to_regist}">店家注册</a>
+		       	 </div>
+		       </div>
+		    </div>
+	      </form>
+	      <!-- login form end -->
+	    </div>
+	  </div>
+    </div>
+    <!-- 页尾 版权声明 -->
+    <div class="container">
+		<div class="col-sm-12 foot-css">
+		        <p class="text-muted credit">
+		            前端模板取自：南京网博
+		        </p>
+	    </div>
+    </div>
+  </body>
+  <script th:inline="javascript">
+      $(function(){
+          var Msg=[[${msg}]];
+          console.log("msg:"+Msg);
+          if (Msg!=null ||Msg!=""){
+              layer.msg(Msg);
+		  }
+	  });
+      function confirm(){
+          var name = $(".loginNme").val();
+          var pwd =$(".pwd").val();
+          var role1 =$("#inlineRadio1:checked").val();
+          var role2 =$("#inlineRadio2:checked").val();
+          console.log(role1+"-----"+role2)
+          if(name ==null|| name==''){
+              layer.msg("用户名不能为空");
+              return false;
+          }
+          if(pwd ==null|| pwd==''){
+              layer.msg("密码不能为空");
+              return false;
+          }
+          if((role1 ==null|| role1=='')&& (role2 ==null|| role2=='')){
+              layer.msg("请选择您的角色");
+              return false;
+          }
+          return true;
+      }
+  </script>
+</html>

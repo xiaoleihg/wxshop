@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>WxShop后台管理系统</title>
+    <link rel="stylesheet"  th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet"  th:href="@{/css/index.css}" />
+    <link rel="stylesheet"  th:href="@{/css/file.css}" />
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/userSetting.js}"></script>
+    <script th:src="@{/layer/layer.js}"></script>
+    <script th:src="@{/js/bootstrapValidator.min.js}"></script>
+    <script th:src="@{/js/bootstrap-paginator.js}"></script>
+    <link rel="stylesheet"  th:href="@{/css/bootstrapValidator.min.css}" />
+    <link rel="stylesheet"  th:href="@{/css/zshop.css}" />
+</head>
+
+<body>
+    <div class="panel panel-info" id="userPic">
+        <div class="panel-heading">
+            <h3 class="panel-title">订单管理</h3>
+        </div>
+        <div class="panel-body">
+            <br>
+            <!--<div class="showusersearch">
+                <form class="form-inline" method="post">
+                    <div class="form-group">
+                        <label for="customer_name">订单号:</label>
+                        <input type="text" class="form-control"id="customer_name" name="oid" placeholder="请输入订单号" size="15px">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer_loginName">用户账号:</label>
+                        <input type="text" class="form-control" id="customer_loginName" name="username" placeholder="请输入用户账号" size="15px">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer_phone">电话:</label>
+                        <input type="text" class="form-control" id="customer_phone" name="phone" placeholder="请输入电话" size="15px">
+                    </div>
+                    <div class="form-group">
+                        <label for="customer_time">创建时间:</label>
+                        <input type="text" class="form-control" id="customer_time" name="createTime" placeholder="请输入创建时间(如：2019-01-02 12:12:12)" size="15px">
+                    </div>
+
+                    <input type="button" value="查询" class="btn btn-primary" id="doSearch">
+                </form>
+            </div>
+            <br>-->
+            <div class="show-list">
+                <table class="table table-bordered table-hover" style='text-align: center;'>
+                    <thead>
+                        <tr class="text-danger">
+                            <th class="text-center">序号</th>
+                            <th class="text-center">订单编号</th>
+                            <th class="text-center">所属用户</th>
+                            <th class="text-center">总价</th>
+                            <th class="text-center">创建时间</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb">
+                        <tr th:each="order,status:${pageInfo.list}">
+                            <td th:text="${(pageInfo.pageNum - 1)*pageInfo.pageSize + status.count}"></td>
+                            <td th:text="${order.oid}"></td>
+                            <td th:text="${order.user.name}"></td>
+                            <td th:text="${order.total}"></td>
+                            <td th:text="${#dates.format(order.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td class="text-center">
+                                <a type="button" class="btn btn-warning btn-sm" th:href="@{./toDetails?id=}+${order.oid}">明细</a>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center"><ul id="pagination"></ul></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script th:inline="javascript">
+    $(function(){
+        //分页
+        $('#pagination').bootstrapPaginator({
+            bootstrapMajorVersion:3,
+            currentPage:[[${pageInfo.pageNum}]],
+            totalPages:[[${pageInfo.pages}]],
+            onPageClicked:function(event, originalEvent, type, page){
+                $('#pageNum').val(page);
+                $('#frmSearch').submit();
+            },
+            pageUrl:function(type,page,current){
+                return [[@{./list}]]+'?pageNum='+  page;
+                },
+                itemTexts:function(type,page,current){
+                    switch (type) {
+                        case "first":
+                            return "首页";
+                        case "prev":
+                            return "上一页";
+                        case "next":
+                            return "下一页";
+                        case "last":
+                            return "末页";
+                        case "page":
+                            return page;
+                    }
+                },
+            })
+        //服务端提示消息
+        let successMsg=[[${successMsg}]];
+        let errorMsg=[[${errorMsg}]];
+        if(successMsg!='' && successMsg!=null){
+            layer.msg(successMsg,{
+                time:2000,
+                skin:'success'
+            })
+        }
+        if(errorMsg!='' && errorMsg!=null){
+            layer.msg(errorMsg,{
+                time:2000,
+                skin:'errors'
+            })
+        }
+    })
+    }
+
+
+</script>
+</html>

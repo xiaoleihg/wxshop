@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.dao.BusinessDao">
+    <resultMap id="businessMap" type="Business">
+        <id column="bid" property="id" javaType="String"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="real_name" property="realName"/>
+        <result column="shop_name" property="shopName"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+    </resultMap>
+
+
+    <select id="selectById" resultMap="businessMap">
+        select bid,name,real_name,shop_name,phone,address
+        from business
+        where bid=#{id}
+    </select>
+
+
+    <select id="selectByNameAndPwd" resultMap="businessMap">
+        select bid,name,real_name,shop_name,phone,address
+        from business
+        where name=#{name} and password=#{password}
+    </select>
+
+
+    <select id="selectByName" resultMap="businessMap">
+        select bid
+        from business
+        where name=#{name}
+    </select>
+
+
+    <select id="selectByShopName" resultMap="businessMap">
+        select bid
+        from business
+        where shop_name=#{shopName}
+    </select>
+
+
+    <update id="update" parameterType="Business">
+        update business
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="shopName != null">shop_name = #{shopName},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address}</if>
+        </set>
+        where bid = #{id}
+    </update>
+
+
+    <insert id="insert" parameterType="Business">
+        insert into business(bid,name,password,shop_name)
+        values (#{id},#{name},#{password},#{shopName})
+    </insert>
+
+    <select id="selectAll" resultMap="businessMap">
+        select bid,name,real_name,shop_name,phone,address
+        from business
+    </select>
+
+</mapper>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>订单详情</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+</head>
+
+<body>
+<div class="navbar navbar-default clear-bottom">
+<!-- content start -->
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="page-header" style="margin-bottom: 0px;">
+                <h3>订单详情</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row head-msg">
+        <div class="col-md-12">
+            用户:<b><span th:text="${order.user.name}"></span></b> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; 手机:<b><span th:text="${order.user.phone}"></span></b>
+        </div>
+        <div class="col-md-12">
+            收货地址:<b><span th:text="${order.address}"></span></b>
+        </div>
+        <div class="col-md-12">
+            订单编号: <b><span th:text="${order.oid}"></span></b>&nbsp;&nbsp; &nbsp;&nbsp;订单时间: <b><span th:text="${#dates.format(order.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span></b>
+        </div>
+    </div>
+    <table class="table table-hover table-striped table-bordered">
+        <tr>
+            <th>序号</th>
+            <th>商品名称</th>
+            <th>商品图片</th>
+            <th>商品数量</th>
+            <th>卖家</th>
+            <th>商品总价/￥</th>
+        </tr>
+        <tr th:each="orderItem,status:${orderItems}">
+            <td th:text="${status.count}"></td>
+            <td th:text="${orderItem.goods.goodsName}"></td>
+            <td> <img th:src="${orderItem.goods.goodsImg}" width="60" height="60"></td>
+            <td th:text="${orderItem.count}"></td>
+            <td th:text="${orderItem.goods.business.name}"></td>
+            <td th:text="${orderItem.subtotal}"></td>
+        </tr>
+
+        <tr>
+            <td colspan="5" class="foot-msg">
+                总计<b><span th:text="${order.total}"></span></b>元
+
+            </td>
+            <td colspan="1" class="foot-msg">
+                <a href="javascript:history.back(-1)" class="btn btn-danger btn-sm">返回上一页</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- content end-->
+</div>
+</body>
+
+</html>

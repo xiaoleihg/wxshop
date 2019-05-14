@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>店家注册</title>
+    <meta charset="utf-8">
+	  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+	  <link rel="stylesheet" th:href="@{/css/mycss.css}" />
+	  <script type="text/javascript" th:href="@{/js/jquery.min.js}"></script>
+	  <script th:src="@{/js/jquery.js}"></script>
+	  <script type="text/javascript" th:href="@{/js/bootstrap.min.js}"></script>
+	<script th:src="@{/layer/layer.js}"></script>
+
+  </head>
+  <body>
+  	<!-- 使用自定义css样式 div-signin 完成元素居中-->
+    <div class="container div-signin">
+      <div class="panel panel-primary div-shadow">
+      	<!-- h3标签加载自定义样式，完成文字居中和上下间距调整 -->
+	    <div class="panel-heading">
+	    	<h3>WxShop 店家注册</h3>
+	    	<span>WxSHOP Manager System</span>
+	    </div>
+	    <div class="panel-body">
+	      <!-- login form start -->
+	      <form th:action="@{./regist}" class="form-horizontal" th:method="post" onSubmit="return confirm();">
+		     <div class="form-group">
+		       <label class="col-sm-3 control-label">账&nbsp;&nbsp;&nbsp;号：</label>
+		       <div class="col-sm-9">
+		         <input class="form-control businessName" th:id="businessName" type="text" placeholder="请输入账号" th:name="name">
+		       </div>
+		    </div>
+		     <div class="form-group">
+		       <label class="col-sm-3 control-label">密&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
+		       <div class="col-sm-9">
+		         <input class="form-control password" th:id="pwd1" type="password" placeholder="请输入密码" th:name="password">
+		       </div>
+			 </div>
+				 <div class="form-group">
+				 <label class="col-sm-3 control-label">确认密码：</label>
+				 <div class="col-sm-9">
+					 <input class="form-control" th:id="pwd2" type="password" placeholder="请再次输入密码" th:name="repassword">
+				 </div>
+		    </div>
+		     <!--<div class="form-group">-->
+		       <!--<label class="col-sm-3 control-label">验证码：</label>-->
+		       <!--<div class="col-sm-4">-->
+		         <!--<input class="form-control" type="text" placeholder="验证码">-->
+		       <!--</div>-->
+		       <!--<div class="col-sm-2">-->
+		       	  <!--&lt;!&ndash; 验证码 &ndash;&gt;-->
+			      <!--<img class="img-rounded" src="../images/image.jpg" style="height: 32px; width: 70px;"/>-->
+		       <!--</div>-->
+		       <!--<div class="col-sm-2">-->
+		         <!--<button type="button" class="btn btn-link">看不清</button>-->
+		       <!--</div>-->
+		    <!--</div>-->
+		    <div class="form-group">
+		       <div class="col-sm-3">
+		       </div>
+		       <div class="col-sm-9 padding-left-0">
+		       	 <div class="col-sm-4">
+			         <button type="submit" class="btn btn-primary btn-block" th:id="regist">注&nbsp;&nbsp;册</button>
+		       	 </div>
+		       	 <div class="col-sm-4">
+			         <button type="reset" class="btn btn-primary btn-block">重&nbsp;&nbsp;置</button>
+		       	 </div>
+
+		       </div>
+		    </div>
+	      </form>
+	      <!-- login form end -->
+	    </div>
+
+	  </div>
+    </div>
+    <!-- 页尾 版权声明 -->
+    <div class="container">
+		<div class="col-sm-12 foot-css">
+		        <p class="text-muted credit">
+		            前端模板取自：南京网博
+		        </p>
+	    </div>
+    </div>
+  
+  </body>
+  <script th:inline="javascript">
+      $(function(){
+          var Msg=[[${msg}]];
+          console.log("msg:"+Msg);
+          if (Msg!=null ||Msg!=""){
+              layer.msg(Msg);
+          }
+      });
+      function confirm(){
+          //console.log("123456")
+          var name = $("#businessName").val();
+          var pwd1 =$("#pwd1").val();
+          var pwd2 =$("#pwd2").val();
+          //alert(name+pwd1+pwd2);
+          if(name ==null|| name==''){
+              layer.msg("用户名不能为空");
+			  return false;
+          }
+          if(pwd1 ==null|| pwd1==''){
+              layer.msg("密码不能为空");
+              return false;
+          }
+          if(pwd1 != pwd2){
+              layer.msg("两次输入的密码不一致");
+              return false;
+          }
+          return true;
+      }
+  </script>
+</html>
+

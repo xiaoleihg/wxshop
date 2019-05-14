@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.dao.UserDao">
+    <resultMap id="userMap" type="User">
+        <id column="uid" property="id" javaType="String"/>
+        <result column="username" property="name"/>
+        <result column="password" property="password"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="real_name" property="realName"/>
+        <result column="head_img" property="headImage"/>
+        <result column="sex" property="sex"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+    </resultMap>
+
+    <select id="selectById" resultMap="userMap">
+        select uid,username,password,real_name,nick_name,head_img,sex,phone,address
+        from user
+        where uid=#{id}
+    </select>
+    <select id="selectByNameAndPwd" resultMap="userMap">
+        select uid,username,nick_name,real_name,head_img,sex,phone,address
+        from user
+        where username=#{name} and password=#{password}
+    </select>
+    <select id="selectByName" resultMap="userMap">
+        select uid
+        from user
+        where username=#{name}
+    </select>
+    <update id="update" parameterType="User">
+        update user
+        <set>
+            <if test="name != null">username = #{name},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="headImage != null">head_img = #{headImage},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address}</if>
+        </set>
+        where uid = #{id}
+    </update>
+    <insert id="insert" parameterType="User">
+        insert into user(uid,username,password,nick_name,head_img,sex)
+        values (#{id},#{name},#{password},#{nickName},#{headImage},#{sex})
+    </insert>
+
+    <select id="selectAll" resultMap="userMap">
+        select uid,username,real_name,sex,phone,address
+        from user
+    </select>
+</mapper>

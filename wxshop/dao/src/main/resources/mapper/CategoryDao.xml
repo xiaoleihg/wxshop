@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huang.dao.CategoryDao">
+    <select id="selectAll" resultType="Category">
+        select cid,cname
+        from category
+    </select>
+    <select id="selectById" resultType="Category">
+        select cid,cname
+        from category
+        where cid = #{id}
+    </select>
+    <select id="selectByName" resultType="Category">
+        select cid,cname
+        from category
+        where cname = #{name}
+    </select>
+    <update id="update">
+        update category
+        <set>
+            <if test="cname != null">cname = #{cname}</if>
+        </set>
+        where cid = #{id}
+    </update>
+    <insert id="insert">
+        insert into category(cid,cname)
+        values(#{id},#{cname})
+    </insert>
+    <delete id="deleteById">
+        delete from category
+        where cid = #{id}
+    </delete>
+</mapper>

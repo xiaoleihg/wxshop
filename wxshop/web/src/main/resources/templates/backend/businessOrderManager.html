@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>backend</title>
+    <link rel="stylesheet"  th:href="@{/css/bootstrap.css}" />
+    <link rel="stylesheet"  th:href="@{/css/index.css}" />
+    <script th:src="@{/js/jquery.js}"></script>
+    <script th:src="@{/js/bootstrap.js}"></script>
+    <script th:src="@{/js/userSetting.js}"></script>
+    <script th:src="@{/layer/layer.js}"></script>
+    <script th:src="@{/js/bootstrap-paginator.js}"></script>
+    <link rel="stylesheet"  th:href="@{/css/zshop.css}" />
+    <script th:inline="javascript">
+        //分页
+        $(function(){
+            var status=[[${status}]];
+            $('#pagination').bootstrapPaginator({
+                bootstrapMajorVersion:3,
+                currentPage:[[${pageInfo.pageNum}]],
+                totalPages:[[${pageInfo.pages}]],
+                pageUrl:function(type,page, current){
+                        return [[@{./findByStatus}]]+'?pageNum='+  page+'&status='+status;
+                        },
+                itemTexts: function (type, page, current) {
+                    switch (type) {
+                        case "first":
+                            return "首页";
+                        case "prev":
+                            return "上一页";
+                        case "next":
+                            return "下一页";
+                        case "last":
+                            return "末页";
+                        case "page":
+                            return page;
+                    }
+                }
+            });
+        });
+        //发货
+        function modifyStatus(id,btn){
+            $.get(
+                [[@{./send}]],
+                {'orderItemId':id},
+                function(result){
+                    if(result.status==1){
+                        //局部刷新
+                        let $td=$(btn).parent().prev();
+                        if($td.text().trim()=='待发货'){
+                            $td.text('待收货');
+                            $(btn).hide();
+                            layer.msg('状态修改成功',{
+                                time:2000,
+                                skin:'errors'
+                            })
+                        }
+                    }else{
+                        layer.msg('系统异常',{
+                            time:2000,
+                            skin:'errors'
+                        })
+                    }
+                }
+            );
+        }
+    </script>
+</head>
+
+<body>
+    <!-- 订单管理 -->
+    <div class="panel panel-default" id="adminSet">
+        <div class="panel-heading">
+            <h3 class="panel-title">订单管理</h3>
+        </div>
+        <div class="panel-body">
+            <a  th:href="@{./list}" class="btn btn-primary">全部订单</a>&nbsp;&nbsp;&nbsp;
+            <a  th:href="@{./findByStatus?status=0}" class="btn btn-primary">未付款订单</a>&nbsp;&nbsp;&nbsp;
+            <a  th:href="@{./findByStatus?status=1}" class="btn btn-primary">待发货订单</a>&nbsp;&nbsp;&nbsp;
+            <a  th:href="@{./findByStatus?status=2}" class="btn btn-primary">待收货订单</a>&nbsp;&nbsp;&nbsp;
+            <a  th:href="@{./findByStatus?status=3}" class="btn btn-primary">已完成订单</a>
+            <br>
+            <br>
+            <div class="show-list" style="position: relative; top: 10px;">
+                <table class="table table-bordered table-hover" style='text-align: center;'>
+                    <caption>有我的订单条目表</caption>
+                    <thead>
+                        <tr class="text-danger">
+                            <th class="text-center">序号</th>
+                            <th class="text-center">订单号</th>
+                            <th class="text-center">所购商、品</th>
+                            <th class="text-center">数量</th>
+                            <th class="text-center">总价</th>
+                            <th class="text-center">状态</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb">
+                        <tr th:each="orderItem,status:${pageInfo.list}">
+                            <td th:text="${(pageInfo.pageNum - 1)*pageInfo.pageSize + status.count}"></td>
+                            <td th:text="${orderItem.orderId}"></td>
+                            <td th:text="${orderItem.goods.goodsName}"></td>
+                            <td th:text="${orderItem.count}"></td>
+                            <td th:text="${orderItem.subtotal}"></td>
+                            <th:block th:switch="${orderItem.status}">
+                                <td th:case="0">待付款</td>
+                                <td th:case="1">待发货</td>
+                                <td th:case="2">待收货</td>
+                                <td th:case="3">已完成</td>
+                            </th:block>
+                            <td class="text-center">
+                                <a type="button" class="btn btn-warning btn-sm" th:href="@{./toDetails?id=}+${orderItem.orderItemId}">明细</a>
+                                <th:block th:if="${orderItem.status==1}">
+                                    <input type="button" class="btn btn-danger btn-sm doProTypeDisable" value="发货" th:onclick="modifyStatus([[${orderItem.orderItemId}]],this)">
+                                </th:block>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center"><ul id="pagination"></ul></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>WxShop-店家信息</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/mycss.css}" />
+    <script type="text/javascript" th:href="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:href="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/layer/layer.js}"></script>
+
+</head>
+<body>
+    <div class="panel panel-info div-signin" id="userSet">
+        <div class="panel-heading">
+            <h3 class="panel-title">店家信息</h3>
+        </div>
+        <div class="panel-body">
+            <div class="show-list">
+                <form th:action="@{./change}" class="form-horizontal" th:method="post" onSubmit="return confirm();">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">编&nbsp;&nbsp;&nbsp;号：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control name" type="text" th:name="id" th:value="${session.business.getId()}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">账&nbsp;&nbsp;&nbsp;号：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control name" type="text" th:name="name" th:value="${session.business.getName()}" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">真实姓名：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control realName" type="text" th:name="realName" th:value="${session.business.getRealName()}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">店&nbsp;&nbsp;&nbsp;名：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control shopName" type="text" th:name="shopName" th:value="${session.business.getShopName()}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">电&nbsp;&nbsp;&nbsp;话：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control phone" type="text" th:name="phone" th:value="${session.business.getPhone()}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">地&nbsp;&nbsp;&nbsp;址：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control address" type="text" th:name="address" th:value="${session.business.getAddress()}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-9 padding-left-0">
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-primary btn-block" th:id="change">修&nbsp;&nbsp;改</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script th:inline="javascript">
+    $(function(){
+        var Msg=[[${msg}]];
+        console.log("msg:"+Msg);
+        if (Msg!=null ||Msg!=""){
+            layer.msg(Msg);
+        }
+    });
+    function confirm(){
+        //console.log("123456")
+        var shopName = $(".shopName").val();
+        var phone = $(".phone").val();
+        var realName = $(".realName").val();
+        var address = $(".address").val();
+        //console.log(name+pwd1+pwd2);
+        if(shopName ==null|| shopName==''){
+            layer.msg("请输入店名");
+            return false;
+        }
+        if(realName ==null|| realName==''){
+            layer.msg("请输入您的姓名");
+            return false;
+        }
+        if(phone ==null|| phone==''){
+            layer.msg("请输入您的联系电话");
+            return false;
+        }
+        if(address ==null|| address==''){
+            layer.msg("请输入您的店铺地址");
+            return false;
+        }
+        return true;
+    }
+</script>
+</html>
