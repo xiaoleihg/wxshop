@@ -21,15 +21,22 @@ public class BusinessController {
     }
     @RequestMapping("/change")
     public String change(Business business, Model model,HttpSession httpSession){
-        //System.out.println("1-----"+business);
         //1.账号不允许修改的，所以先检查店名是否存在
         Business business1 = businessService.queryShopNameIsExist(business.getShopName());
-        //System.out.println("2-----"+business1);
         if(business1 != null && !business.getId().equals(business1.getId())){
             model.addAttribute("msg","该店名已存在，换一个试试吧！！");
             return "forward:find";
         }
-        //2.更新数据
+        //输入店名且店名不存在，这是第2次修改。将店名置为null
+        if (business1 == null && business.getVersion()==2 && business.getShopName() != null){
+            model.addAttribute("msg","店名只能修改一次");
+            business.setShopName(null);
+        }
+        //输入店名且店名不存在，这是第一次修改。将version置为2
+        if (business1 == null && business.getVersion()==1 && business.getShopName() != null){
+            business.setVersion(2);
+        }
+        //2.更新session中的数据
         businessService.updateBusinessInfo(business);
         model.addAttribute("msg","信息修改成功");
         Business business2 = businessService.queryBusinessInfo(business.getId());

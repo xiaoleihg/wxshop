@@ -31,7 +31,6 @@ public class LoginController {
     }
     @RequestMapping("/login")
     public String login(HttpSession session,Model model,String name, String password ,Integer role)throws Exception{
-        //System.out.println(name+password+role);
         //1.判断用户名和密码是否为空
         if (StringUtils.isBlank(name) || StringUtils.isBlank(password)) {
             model.addAttribute("msg","用户名和密码不能为空");
@@ -41,25 +40,32 @@ public class LoginController {
         if(role==null){
            model.addAttribute("msg","请选择用户类型");
            return "forward:to_login";
-        }else if(role == 0){//管理员
+        }else if(role == 0){//管理员登录
             Manager manager = managerService.find(name, MD5Utils.getMD5Str(password));
-            if(manager == null){
+            if(manager == null){//  判断符合条件的用户是否存在
                 model.addAttribute("msg","账号或密码错误");
                 return "forward:to_login";
             }
             session.setAttribute("manager",manager);
             return "redirect:manager/to_main";
-        }else if (role == 1){//店家
-            Business business = businessService.queryBusinessForLogin(name,MD5Utils.getMD5Str(password));
-            //System.out.println(business);
+        }else if (role == 1){//店家登录
+            Business business =businessService.queryBusinessForLogin(name,MD5Utils.getMD5Str(password));
             if(business == null){
                 model.addAttribute("msg","账号或密码错误");
                 return "forward:to_login";
+            }else {
+                if (business.getStatus() == 0){
+                    model.addAttribute("msg","您尚未通过审核");
+                    return "forward:to_login";
+                }
+                if (business.getStatus() == 2){
+                    model.addAttribute("msg","您已被封号，请等待解封");
+                    return "forward:to_login";
+                }
             }
             session.setAttribute("business",business);
             return "redirect:business/to_main";
         }
-
         return "redirect:to_login";
     }
     @RequestMapping("/manager/to_main")
@@ -79,7 +85,6 @@ public class LoginController {
 
     @RequestMapping("/regist")
     public String regist(HttpSession session,Model model,String name, String password)throws Exception {
-        System.out.println(name+password);
         // 1. 判断用户名和密码必须不为空
         if (StringUtils.isBlank(name) || StringUtils.isBlank(password)) {
             model.addAttribute("msg", "注册失败，账号和密码必须不为空");
@@ -94,6 +99,8 @@ public class LoginController {
             business.setName(name);
             business.setPassword(MD5Utils.getMD5Str(password));
             business.setShopName(name+"的店");
+            business.setVersion(1);
+            business.setStatus(0);
             businessService.saveBusiness(business);
             //去掉密码，并将其保存到session
             business.setPassword("");
@@ -102,7 +109,8 @@ public class LoginController {
             model.addAttribute("msg", "注册失败，该账号已存在");
             return "forward:to_regist";
         }
-        return "redirect:business/to_main";
+        model.addAttribute("msg", "注册成功，请等待管理员审核");
+        return "forward:to_regist";
     }
     @RequestMapping("/logout")
     public String logout(HttpSession session){

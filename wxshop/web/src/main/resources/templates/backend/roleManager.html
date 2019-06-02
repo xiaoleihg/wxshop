@@ -26,7 +26,7 @@
                         return [[@{./findAllCustomer}]]+'?pageNum='+  page;
                         }
                         return [[@{./findAllBusiness}]]+'?pageNum='+  page;
-                    },
+                },
                     itemTexts: function (type, page, current) {
                         switch (type) {
                             case "first":
@@ -41,8 +41,36 @@
                                 return page;
                         }
                     }
-                });
+            });
         });
+        //修改商家的状态
+        function modifyStatus(id,btn){
+            $.get(
+                [[@{./modifyStatus}]],
+                {'id':id},
+                function(result){
+                    if(result.status==1){
+                        //局部刷新
+                        let $td=$(btn).parent().prev().prev().prev();
+                        if($td.text().trim()=='待审核'){
+                            $td.text('审核通过');
+                            $(btn).val('封禁账号').removeClass('btn-success').addClass('btn-danger');
+                        }else if($td.text().trim()=='已封禁'){
+                            $td.text('已解禁');
+                            $(btn).val('封禁账号').removeClass('btn-success').addClass('btn-danger');
+                        }else{
+                            $td.text('已封禁');
+                            $(btn).val('解除封禁').removeClass('btn-danger').addClass('btn-success');
+                        }
+                    }else{
+                        layer.msg('系统异常',{
+                            time:2000,
+                            skin:'errors'
+                        })
+                    }
+                }
+            );
+        }
     </script>
 </head>
 
@@ -59,36 +87,6 @@
                 <a  th:href="@{./findAllCustomer}" class="btn btn-primary">查询顾客</a>
             </th:block>
             <br>
-            <!--<div class="showusersearch">
-                <form class="form-inline" method="post">
-                  <div class="form-group">
-                    <label for="customer_name">姓名:</label>
-                    <input type="text" class="form-control"id="customer_name" name="name" placeholder="请输入姓名" size="15px">
-                  </div>
-                  <div class="form-group">
-                    <label for="customer_loginName">帐号:</label>
-                    <input type="text" class="form-control" id="customer_loginName" name="loginName" placeholder="请输入帐号" size="15px">
-                  </div>
-                  <div class="form-group">
-                    <label for="customer_phone">电话:</label>
-                    <input type="text" class="form-control" id="customer_phone" name="phone" placeholder="请输入电话" size="15px">
-                  </div>
-                  <div class="form-group">
-                    <label for="customer_address">地址:</label>
-                    <input type="text" class="form-control" id="customer_address" name="address" placeholder="请输入地址">
-                  </div>
-                  <div class="form-group">
-                    <label for="customer_isValid">状态:</label>
-                        <select class="form-control" id="customer_isValid" name="isValid">
-                            <option value="-1">全部</option>
-                            <option value="1">-&#45;&#45;有效-&#45;&#45;</option>
-                            <option value="0">-&#45;&#45;无效-&#45;&#45;</option>
-                        </select>
-                  </div>
-                  <input type="button" value="查询" class="btn btn-primary" id="doSearch">
-                </form>
-            </div>-->
-            
             <div class="show-list" style="position: relative;top: 30px;">
                 <table class="table table-bordered table-hover" style='text-align: center;'>
                     <th:block th:if="${role == 'customer'}">
@@ -123,8 +121,10 @@
                             <th class="text-center">姓名</th>
                             <th class="text-center">帐号</th>
                             <th class="text-center">店铺名</th>
+                            <th class="text-center">状态</th>
                             <th class="text-center">电话</th>
                             <th class="text-center">地址</th>
+                            <th class="text-center">操作</th>
                         </thead>
                         <tbody >
                         <tr th:each="business,status:${pageInfo.list}">
@@ -132,13 +132,32 @@
                             <td th:text="${business.realName == ''||business.realName == null ? '用户尚未填写' : business.realName}"></td>
                             <td th:text="${business.name}"></td>
                             <td th:text="${business.shopName}"></td>
+                            <th:block th:switch="${business.status}">
+                                <td th:case="0">待审核</td>
+                                <td th:case="1">审核通过</td>
+                                <td th:case="2">已封禁</td>
+                                <td th:case="3">已解禁</td>
+                            </th:block>
                             <td th:text="${business.phone}"></td>
                             <td th:text="${business.address}"></td>
-
-                            <!--<td class="text-center">
-                                <input type="button" class="btn btn-warning btn-sm doModify" value="修改">
-                                <input type="button" class="btn btn-danger btn-sm doDisable" value="禁用">
-                            </td>-->
+                            <th:block th:switch="${business.status}">
+                                <td th:case="0">
+                                    <input type="button" class="btn btn-success btn-sm doModify" value="通过审核"
+                                           th:onclick="modifyStatus([[${business.id}]],this)">
+                                </td>
+                                <td th:case="1">
+                                    <input type="button" class="btn btn-danger btn-sm doModify" value="封禁账号"
+                                           th:onclick="modifyStatus([[${business.id}]],this)">
+                                </td>
+                                <td th:case="2">
+                                    <input type="button" class="btn btn-success btn-sm doModify" value="解除封禁"
+                                           th:onclick="modifyStatus([[${business.id}]],this)">
+                                </td>
+                                <td th:case="3">
+                                    <input type="button" class="btn btn-danger btn-sm doModify" value="封禁账号"
+                                           th:onclick="modifyStatus([[${business.id}]],this)">
+                                </td>
+                            </th:block>
                         </tr>
                         </tbody>
                     </th:block>

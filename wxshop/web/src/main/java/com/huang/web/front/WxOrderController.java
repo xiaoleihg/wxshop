@@ -25,22 +25,16 @@ public class WxOrderController {
     private OrderService orderService;
     @PostMapping("/createOrder")
     public ResponseResult createOrder(@RequestBody String data){
-        //System.out.println(data);
         JSONObject jsonObject = JSONObject.parseObject(data);
-        //System.out.println(jsonObject.getString("orderItems"));
         User user = jsonObject.getObject("user", User.class);
-        //System.out.println(user);
-        /*创建订单对象*/
-        Orders order = new Orders();
+        Orders order = new Orders();//创建订单对象并完善
         order.setOid(UUID.randomUUID().toString());
         order.setCreateTime(new Date());
         order.setUser(user);
         order.setTotal(jsonObject.getDouble("total"));
         order.setAddress(jsonObject.getString("address"));
         /*获取订单条目列表
-        * 1.获得购物车条目
-        * 2.创建订单条目列表
-        * 3.通过foreach将cartItem转化为orderItem
+        * 1.获得购物车条目；2.创建订单条目列表； 3.通过foreach将cartItem转化为orderItem
         * */
         JSONArray jsonArray = jsonObject.getJSONArray("orderItems");
         List<CartItem> cartItems = jsonArray.toJavaList(CartItem.class);
@@ -48,10 +42,13 @@ public class WxOrderController {
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem:cartItems) {
             Goods goods1 = goodsService.findById(cartItem.getGid());
+            System.out.println(goods1);
             if(goods1.getIsValid()==0) {
                 return ResponseResult.fail("抱歉"+cartItem.getGoodsName() + "已下架");
             }else if(goods1.getStock()<cartItem.getCount()){
                return ResponseResult.fail("抱歉"+cartItem.getGoodsName()+"库存不足");
+            }else if(goods1.getBusiness().getStatus()==2){
+                return ResponseResult.fail("抱歉商家应违规操作被封号");
             }else{
                 OrderItem orderItem = new OrderItem();
                 orderItem.setGoodsId(goods1.getGid());
@@ -61,9 +58,8 @@ public class WxOrderController {
                 orderItems.add(orderItem);
             }
         }
-        //完善订单对象，设置订单条目
+        //完善订单对象，设置订单条目，持久化到数据库，并减少对应商品的库存
         order.setOrderItemList(orderItems);
-        //System.out.println(order);
         orderService.createOrder(order);
         goodsService.decreaseStock(orderItems);
         order.setOrderItemList(null);
@@ -84,14 +80,12 @@ public class WxOrderController {
         JSONObject jsonObject = JSONObject.parseObject(data);
         String userId = jsonObject.getString("userId");
         Integer status = jsonObject.getInteger("status");
-        //System.out.println("userId:"+userId+"-------------"+"status:"+status);
         List<OrderItem> orderItems = new ArrayList<>();
-        if(status == -1){
+        if(status == -1){//status=-1则查询全部
             orderItems = orderService.findForCustomer(userId);
-        }else{
+        }else{//反之，根据status按状态查询
             orderItems = orderService.findForCustomerAndStatus(userId,status);
         }
-        //System.out.println(orderItems);
         return ResponseResult.success(orderItems);
     }
 
@@ -100,7 +94,6 @@ public class WxOrderController {
         JSONObject jsonObject = JSONObject.parseObject(data);
         Integer orderItemId = jsonObject.getInteger("orderItemId");
         Integer status = jsonObject.getInteger("status");
-        //System.out.println("orderItemId:"+orderItemId+"-------------"+"status:"+status);
         orderService.changeItemStatus(orderItemId,status+1);
         return ResponseResult.success();
     }

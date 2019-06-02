@@ -68,7 +68,7 @@ public class BusinessGoodsController {
             return "forward:list?pageNum=" + pageNum;
         }
         goodsVo.setGid("G"+new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        goodsVo.setIsValid(1);
+        goodsVo.setIsValid(1);//设置上架状态。默认上架
         goodsVo.setBusinessId(business.getId());
         //System.out.println("add--vo----"+goodsVo);
         try {
@@ -77,28 +77,36 @@ public class BusinessGoodsController {
             PropertyUtils.copyProperties(goodsDto, goodsVo);  //对象间属性的拷贝
             goodsDto.setFileName(goodsVo.getFile().getOriginalFilename());
             goodsDto.setInputStream(goodsVo.getFile().getInputStream());
-            //System.out.println("add--DTO----"+goodsDto);
             goodsService.add(goodsDto);
             model.addAttribute("successMsg", "添加成功");
         } catch (Exception e) {
             model.addAttribute("errorMsg", e.getMessage());
         }
-
         return "forward:list?pageNum=" + pageNum;
     }
 
-    @RequestMapping("/remove")
+    @RequestMapping("/remove")//删除
     @ResponseBody
     public ResponseResult removeById(String id) {
         goodsService.removeById(id);
         return ResponseResult.success();
     }
-
-    @RequestMapping("/findById")
+    @RequestMapping("/findById")//查看商品详情
     @ResponseBody
     public ResponseResult findById(String id) {
         Goods goods = goodsService.findById(id);
         return ResponseResult.success(goods);
+    }
+    @RequestMapping("/modifyStatus")//修改商品状态，上下架处理
+    @ResponseBody
+    public ResponseResult modifyStatus(String id,Model model){
+        try {
+            goodsService.modifyStatus(id);
+            return ResponseResult.success();
+        }catch (Exception e){
+            model.addAttribute("errorMsg", e.getMessage());
+            return ResponseResult.fail();
+        }
     }
     @RequestMapping("/edit")
     public String edit(GoodsVo goodsVo, Integer pageNum, HttpSession session, Model model) {
@@ -125,15 +133,5 @@ public class BusinessGoodsController {
         }
         return "forward:list?pageNum=" + pageNum;
     }
-    @RequestMapping("/modifyStatus")
-    @ResponseBody
-    public ResponseResult modifyStatus(String id,Model model){
-        try {
-            goodsService.modifyStatus(id);
-            return ResponseResult.success();
-        }catch (Exception e){
-            model.addAttribute("errorMsg", e.getMessage());
-            return ResponseResult.fail();
-        }
-    }
+
 }

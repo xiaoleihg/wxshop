@@ -3,6 +3,7 @@ package com.huang.web.backend.manager;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.huang.common.constant.PageConstant;
+import com.huang.common.utils.ResponseResult;
 import com.huang.pojo.Business;
 import com.huang.pojo.User;
 import com.huang.service.BusinessService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -48,5 +50,19 @@ public class RoleController {
         model.addAttribute("pageInfo",pageInfo);
         model.addAttribute("role","business");
         return "backend/roleManager";
+    }
+
+    @RequestMapping("/modifyStatus")//修改商家状态，上下架处理
+    @ResponseBody
+    public ResponseResult modifyStatus(String id, Model model){
+
+        try {
+            businessServices.modifyStatus(id);
+            model.addAttribute("msg","操作成功" );
+            return ResponseResult.success();
+        }catch (Exception e){
+            model.addAttribute("errorMsg", e.getMessage());
+            return ResponseResult.fail();
+        }
     }
 }

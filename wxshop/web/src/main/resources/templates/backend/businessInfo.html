@@ -19,6 +19,7 @@
         <div class="panel-body">
             <div class="show-list">
                 <form th:action="@{./change}" class="form-horizontal" th:method="post" onSubmit="return confirm();">
+                    <input th:name="version" th:value="${session.business.getVersion()}" th:hidden="true">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">编&nbsp;&nbsp;&nbsp;号：</label>
                         <div class="col-sm-9">
@@ -40,7 +41,8 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">店&nbsp;&nbsp;&nbsp;名：</label>
                         <div class="col-sm-9">
-                            <input class="form-control shopName" type="text" th:name="shopName" th:value="${session.business.getShopName()}">
+                            <input class="form-control shopName" type="text" th:name="shopName" th:value="${session.business.getShopName()}"
+                                   th:readonly="${session.business.getVersion() == 2 ? 'true':'false'}">
                         </div>
                     </div>
                     <div class="form-group">
